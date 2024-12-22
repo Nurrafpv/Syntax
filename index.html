@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orbit To Slate Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .section {
+      width: 45%;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    textarea, button {
+      width: 100%;
+      margin: 10px 0;
+    }
+    textarea {
+      height: 200px;
+    }
+    button {
+      padding: 10px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .error {
+      color: red;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <!-- Input Section -->
+  <div class="section">
+    <h2>List From Orbit String</h2>
+    <p>Enter one element per line:</p>
+    <textarea id="inputArea" placeholder="Enter your text here..."></textarea>
+    <p id="errorMsg" class="error"></p>
+    <button onclick="processInput()">Process</button>
+  </div>
+
+  <!-- Output Section -->
+  <div class="section">
+    <h2>Slate Compatible List</h2>
+    <textarea id="outputArea" readonly placeholder="Output will appear here..."></textarea>
+  </div>
+
+  <script>
+    function processInput() {
+      const input = document.getElementById("inputArea").value;
+      const errorMsg = document.getElementById("errorMsg");
+      const rows = input.split("\n");
+      const processedRows = [];
+      let hasError = false;
+
+      rows.forEach((row, index) => {
+        const trimmedRow = row.trim();
+        if (!trimmedRow) {
+          errorMsg.textContent = `Error on line ${index + 1}: Row is empty.`;
+          hasError = true;
+          return;
+        }
+        if (/[^a-zA-Z0-9\-\/\s]/.test(trimmedRow)) {
+          errorMsg.textContent = `Error on line ${index + 1}: Invalid characters detected.`;
+          hasError = true;
+          return;
+        }
+        const processedRow = trimmedRow.replace(/[-\/]/g, " ").replace(/\s+/g, "");
+        processedRows.push(processedRow);
+      });
+
+      if (!hasError) {
+        errorMsg.textContent = "";
+        document.getElementById("outputArea").value = processedRows.join("\n");
+      } else {
+        document.getElementById("outputArea").value = "";
+      }
+    }
+  </script>
+</body>
+</html>
